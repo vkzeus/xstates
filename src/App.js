@@ -17,7 +17,7 @@ function LocationSelector() {
         const response = await axios.get(
           "https://crio-location-selector.onrender.com/countries"
         );
-        setCountries(response.data || []);
+        setCountries(response.data);
       } catch (error) {
         console.error("Error fetching countries:", error);
         alert("Failed to fetch countries.");
@@ -27,33 +27,40 @@ function LocationSelector() {
   }, []);
 
   // Fetch states of the selected country
- // Fetch states of the selected country
-const fetchStates = async (countryName) => {
-  try {
-    const response = await axios.get(
-      `https://crio-location-selector.onrender.com/country=${countryName}/states`
-    );
-
-    if (response.data && Array.isArray(response.data)) {
-      setStates(response.data);
-    } else {
-      console.error("Unexpected states data format:", response.data);
-      alert("Failed to fetch all states. Please try again.");
+  const fetchStates = async (countryName) => {
+    try {
+      const response = await axios.get(
+        `https://crio-location-selector.onrender.com/country=${encodeURIComponent(
+          countryName
+        )}/states`
+      );
+      if (response.data && Array.isArray(response.data)) {
+        setStates(response.data);
+        setCities([]); // Clear cities on country change
+      } else {
+        console.error("Unexpected states data format:", response.data);
+        alert("Failed to fetch states. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error fetching states:", error);
+      alert("Failed to fetch states.");
     }
-    setCities([]); // Clear cities on country change
-  } catch (error) {
-    console.error("Error fetching states:", error);
-    alert("Failed to fetch states.");
-  }
-};
+  };
 
   // Fetch cities of the selected state
   const fetchCities = async (countryName, stateName) => {
     try {
       const response = await axios.get(
-        `https://crio-location-selector.onrender.com/country=${countryName}/state=${stateName}/cities`
+        `https://crio-location-selector.onrender.com/country=${encodeURIComponent(
+          countryName
+        )}/state=${encodeURIComponent(stateName)}/cities`
       );
-      setCities(response.data || []);
+      if (response.data && Array.isArray(response.data)) {
+        setCities(response.data);
+      } else {
+        console.error("Unexpected cities data format:", response.data);
+        alert("Failed to fetch cities. Please try again.");
+      }
     } catch (error) {
       console.error("Error fetching cities:", error);
       alert("Failed to fetch cities.");
@@ -67,7 +74,9 @@ const fetchStates = async (countryName) => {
     setSelectedState("");
     setSelectedCity("");
     setMessage("");
-    if (country) fetchStates(country);
+    if (country) {
+      fetchStates(country);
+    }
   };
 
   // Handle state selection
@@ -76,7 +85,9 @@ const fetchStates = async (countryName) => {
     setSelectedState(state);
     setSelectedCity("");
     setMessage("");
-    if (state) fetchCities(selectedCountry, state);
+    if (state) {
+      fetchCities(selectedCountry, state);
+    }
   };
 
   // Handle city selection
@@ -95,10 +106,14 @@ const fetchStates = async (countryName) => {
       {/* Country Dropdown */}
       <div>
         <label htmlFor="country">Select Country: </label>
-        <select id="country" value={selectedCountry} onChange={handleCountryChange}>
+        <select
+          id="country"
+          value={selectedCountry}
+          onChange={handleCountryChange}
+        >
           <option value="">-- Select Country --</option>
-          {countries.map((country, index) => (
-            <option key={index} value={country}>
+          {countries.map((country) => (
+            <option key={country} value={country}>
               {country}
             </option>
           ))}
@@ -115,8 +130,8 @@ const fetchStates = async (countryName) => {
           disabled={!selectedCountry}
         >
           <option value="">-- Select State --</option>
-          {states.map((state, index) => (
-            <option key={index} value={state}>
+          {states.map((state) => (
+            <option key={state} value={state}>
               {state}
             </option>
           ))}
@@ -133,8 +148,8 @@ const fetchStates = async (countryName) => {
           disabled={!selectedState}
         >
           <option value="">-- Select City --</option>
-          {cities.map((city, index) => (
-            <option key={index} value={city}>
+          {cities.map((city) => (
+            <option key={city} value={city}>
               {city}
             </option>
           ))}
