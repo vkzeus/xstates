@@ -157,7 +157,12 @@ function LocationSelector() {
       </div>
 
       {/* Message */}
-      {message && <p className="message">{message}</p>}
+      {message ? (
+  <p className="message">{message}</p>
+) : (
+  <p className="message placeholder">Please select your location details.</p>
+)}
+
     </div>
   );
 }
