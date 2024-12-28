@@ -10,7 +10,7 @@ function LocationSelector() {
   const [selectedCity, setSelectedCity] = useState("");
   const [message, setMessage] = useState("");
 
-  // Fetch all countries on initial render
+  
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -26,8 +26,7 @@ function LocationSelector() {
     fetchCountries();
   }, []);
 
-  // Fetch states of the selected country
- // Fetch states of the selected country
+
 const fetchStates = async (countryName) => {
   try {
     const response = await axios.get(
@@ -40,14 +39,14 @@ const fetchStates = async (countryName) => {
       console.error("Unexpected states data format:", response.data);
       alert("Failed to fetch all states. Please try again.");
     }
-    setCities([]); // Clear cities on country change
+    setCities([]); 
   } catch (error) {
     console.error("Error fetching states:", error);
     alert("Failed to fetch states.");
   }
 };
 
-  // Fetch cities of the selected state
+  
   const fetchCities = async (countryName, stateName) => {
     try {
       const response = await axios.get(
@@ -60,7 +59,7 @@ const fetchStates = async (countryName) => {
     }
   };
 
-  // Handle country selection
+
   const handleCountryChange = (e) => {
     const country = e.target.value;
     setSelectedCountry(country);
@@ -70,7 +69,7 @@ const fetchStates = async (countryName) => {
     if (country) fetchStates(country);
   };
 
-  // Handle state selection
+ 
   const handleStateChange = (e) => {
     const state = e.target.value;
     setSelectedState(state);
@@ -79,7 +78,7 @@ const fetchStates = async (countryName) => {
     if (state) fetchCities(selectedCountry, state);
   };
 
-  // Handle city selection
+
   const handleCityChange = (e) => {
     const city = e.target.value;
     setSelectedCity(city);
@@ -92,7 +91,7 @@ const fetchStates = async (countryName) => {
     <div className="location-selector">
       <h1>Location Selector</h1>
 
-      {/* Country Dropdown */}
+   
       <div>
         <label htmlFor="country">Select Country: </label>
         <select id="country" value={selectedCountry} onChange={handleCountryChange}>
@@ -105,7 +104,7 @@ const fetchStates = async (countryName) => {
         </select>
       </div>
 
-      {/* State Dropdown */}
+   
       <div>
         <label htmlFor="state">Select State: </label>
         <select
@@ -123,7 +122,7 @@ const fetchStates = async (countryName) => {
         </select>
       </div>
 
-      {/* City Dropdown */}
+     
       <div>
         <label htmlFor="city">Select City: </label>
         <select
@@ -141,7 +140,7 @@ const fetchStates = async (countryName) => {
         </select>
       </div>
 
-      {/* Message */}
+      
       {message && <p className="message">{message}</p>}
     </div>
   );
